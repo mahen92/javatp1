@@ -28,6 +28,26 @@ sequenceDiagram
 
     Note over Admin,Engine: Workflow is now ready for execution
 
+sequenceDiagram
+    participant User as Application User
+    participant App as Parent Application
+    participant Adapter as Adapter
+    participant Engine as Workflow Engine
+    participant DB as Database
+
+    User->>App: Perform action (e.g., Start Process / Submit Input)
+    App->>Adapter: Send event data / trigger
+    Adapter->>Engine: Start or continue workflow execution
+
+    Engine->>DB: Update workflow state
+    Engine-->>Adapter: Respond with next task and input requirements
+    Adapter-->>App: Provide next step info and required inputs
+    App-->>User: Show next task and collect inputs
+
+    Note over Engine,DB: Engine maintains and updates process state in DB
+    Note over Adapter,App: Adapter acts as intermediary, managing orchestration
+
+
 
 
 =========
