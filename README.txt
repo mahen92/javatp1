@@ -8,35 +8,26 @@ How to build?
            Alternatively supply proxy settings to the mvn command above.
 2. Go to contentprotection's pom.xml file location, run
    mvn clean package
-
 sequenceDiagram
-    participant User as Console User
-    participant Console as Workflow Console
-    participant SCM as SCM System
-    participant WF as Workflow Engine
-    participant Orchestrator as Workflow Orchestrator
-    participant TnT as Track & Trace
+    participant Admin as Admin
+    participant Modeler as Web Modeler
+    participant Adapter as Adapter
+    participant Engine as Workflow Engine
+    participant DB as Database
 
-    User->>Console: Select target system for workflow
-    Console->>SCM: Select SCM to fetch product masterdata
-    SCM-->>Console: Return product masterdata
+    Admin->>Modeler: Open workflow modeler UI
+    Admin->>Modeler: Create new workflow
+    Admin->>Modeler: Define steps and I/O for each step
 
-    User->>Console: Define Process Pool (aggregated event)
-    User->>Console: Define Tasks/Steps in the Pool
-    User->>Console: Assign Stakeholders (users/groups)
+    Modeler->>Adapter: Validate and transform BPMN
+    Adapter->>Engine: Prepare executable workflow definition
 
-    User->>Console: Save Workflow
-    Console->>WF: Trigger BPMN translation
-    WF->>SCM: Convert Pools to Event Profiles + Configure Trigger Points
+    Admin->>Modeler: Deploy workflow
+    Modeler->>Engine: Deploy workflow definition
+    Engine->>DB: Store workflow metadata and I/O schema
 
-    SCM->>User: Trigger invoked from SCM UI
-    SCM->>Orchestrator: Redirect to Workflow Orchestrator
-    Orchestrator->>WF: Execute respective workflow steps
+    Note over Admin,Engine: Workflow is now ready for execution
 
-    WF-->>SCM: Notify Process Pool completion
-
-    SCM->>TnT: Display events on Track & Trace screen
-    SCM-->>WF: Keep detailed event data in Workflow Engine
 
 
 =========
